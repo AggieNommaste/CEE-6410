@@ -1,0 +1,14 @@
+B 3 C o m p i l a t i o n
+B 88 Equation Listing    SOLVE PRODUCTION Using LP From line 76
+D 91 PROFIT
+D 96 RES_CONSTRAIN
+B 106 Column Listing      SOLVE PRODUCTION Using LP From line 76
+E 109 X
+E 126 VPROFIT
+B 134 Range Statistics    SOLVE PRODUCTION Using LP From line 76
+B 145 Model Statistics    SOLVE PRODUCTION Using LP From line 76
+B 158 Solution Report     SOLVE PRODUCTION Using LP From line 76
+F 191 PROFIT
+F 195 RES_CONSTRAIN
+G 203 X
+G 212 VPROFIT
