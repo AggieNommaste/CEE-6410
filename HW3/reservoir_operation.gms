@@ -46,8 +46,8 @@ Positive Variables
 
 Variables
     total_benefits the total amount of profit ($)
-    Max_level the maximum capacity of the resevoir
-    Min_level the resevoir protection level;
+    Max_level the maximum capacity of the resevoir (ac-ft)
+    Min_level the resevoir protection level (ac-ft);
     
 *Max_level = 9000;
 *Min_level = 3000;
