@@ -48,7 +48,7 @@ Positive Variables
     X(loc, t) Decision Variables for location of water in the network for each month;
     
 Variables
-    total_benefits the total amount of profit ($)
+    total_benefits the total amount of profit ($);
 
 
 * 4. Define equations
