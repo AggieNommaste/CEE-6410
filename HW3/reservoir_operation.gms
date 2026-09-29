@@ -29,6 +29,7 @@ $offText
 * 1. Define the Sets
 Sets
 t Time of Month /June, July, August/
+loc Choice of Location /Div, Res, Spill/;
 
 
 * 2. Define Input Data
@@ -40,10 +41,11 @@ Parameters
     /June 5000, July 3200, August 2000/;
     
 Positive Variables
-    X_div(t) Amount of Water to Divert each month (ac-ft)
-    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-    X_spill(t) Amount of Water to spill over each month (ac-ft);
-
+*    X_div(t) Amount of Water to Divert each month (ac-ft)
+*    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
+*    X_spill(t) Amount of Water to spill over each month (ac-ft);
+    X(loc, t);
+    
 Variables
     total_benefits the total amount of profit ($)
     Max_level the maximum capacity of the resevoir
@@ -60,14 +62,14 @@ Equations
     Mass_balance;
 
 * Objective Function
-Profit.. total_benefits =E= sum(t, c(t)*X_div(t)) + sum(t, 0*X_res(t)) + sum(t, 0*X_spill(t));
+Profit.. total_benefits =E= sum(t, c(t)*X(ord(1), t);
 *Capacity(t).. X_res(t) =L= Max_level;
 *Protection_level(t).. X_res(t) =G= Min_level;
 
 * Constrain Equations
-Capacity(t).. X_res(t) =L= 9000;
-Protection_level(t).. X_res(t) =G= 3000;
-Mass_balance(t).. inflow(t) - X_div(t) - X_spill(t) =E= X_res(t) - 3000 $(ord(t) = 1)  - X_res(t-1);
+Capacity(t).. X(ord(2),t) =L= 9000;
+Protection_level(t).. X(ord(2), t) =G= 3000;
+Mass_balance(t).. inflow(t) - X(ord(1),t) - X(ord(3),t) =E= X(ord(2),t) - 3000 $(ord(t) = 1)  - X(ord(2),t-1);
 
 * Create the model
 Model Reservoir /all/;

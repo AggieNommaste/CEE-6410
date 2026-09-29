@@ -1,4 +1,4 @@
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 14:58:13 Page 1
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 15:18:45 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -32,280 +32,89 @@ C o m p i l a t i o n
   29  * 1. Define the Sets
   30  Sets
   31  t Time of Month /June, July, August/
-  32   
+  32  loc Choice of Location /Div, Res, Spill/;
   33   
-  34  * 2. Define Input Data
-  35  Parameters
-  36      c(t) Objective Function Coeffiecients ($ per ac-ft)
-  37      /June 150, July 170, August 425/
-  38   
-  39      inflow(t) Inflow input data (ac-ft)
-  40      /June 5000, July 3200, August 2000/;
-  41   
-  42  Positive Variables
-  43      X_div(t) Amount of Water to Divert each month (ac-ft)
-  44      X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-  45      X_spill(t) Amount of Water to spill over each month (ac-ft);
-  46   
-  47  Variables
-  48      total_benefits the total amount of profit ($)
-  49      Max_level the maximum capacity of the resevoir
-  50      Min_level the resevoir protection level;
-  51   
-  52  *Max_level = 9000;
-  53  *Min_level = 3000;
-  54   
-  55  * Defining equations
-  56  Equations
-  57      Profit
-  58      Capacity
-  59      Protection_level
-  60      Mass_balance;
-  61   
-  62  * Objective Function
-  63  Profit.. total_benefits =E= sum(t, c(t)*X_div(t)) + sum(t, 0*X_res(t)) + sum(t, 0*X_spill(t));
-  64  *Capacity(t).. X_res(t) =L= Max_level;
-  65  *Protection_level(t).. X_res(t) =G= Min_level;
-  66   
-  67  * Constrain Equations
-  68  Capacity(t).. X_res(t) =L= 9000;
-  69  Protection_level(t).. X_res(t) =G= 3000;
-  70  Mass_balance(t).. inflow(t) - X_div(t) - X_spill(t) =E= X_res(t) - 3000 $(ord(t) = 1)  - X_res(t-1);
-  71   
-  72  * Create the model
-  73  Model Reservoir /all/;
-  74   
-  75   
-  76  * Run the model using Linear method
-  77  Solve Reservoir using LP maximing total_benefits;
-
-
-COMPILATION TIME     =        0.001 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 14:58:13 Page 2
-G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Equation Listing    SOLVE Reservoir Using LP From line 77
-
-
----- Profit  =E=  
-
-Profit..  - 150*X_div(June) - 170*X_div(July) - 425*X_div(August) + total_benefits =E= 0 ; (LHS = 0)
-     
-
----- Capacity  =L=  
-
-Capacity(June)..  X_res(June) =L= 9000 ; (LHS = 0)
-     
-Capacity(July)..  X_res(July) =L= 9000 ; (LHS = 0)
-     
-Capacity(August)..  X_res(August) =L= 9000 ; (LHS = 0)
-     
-
----- Protection_level  =G=  
-
-Protection_level(June)..  X_res(June) =G= 3000 ; (LHS = 0, INFES = 3000 ****)
-     
-Protection_level(July)..  X_res(July) =G= 3000 ; (LHS = 0, INFES = 3000 ****)
-     
-Protection_level(August)..  X_res(August) =G= 3000 ; (LHS = 0, INFES = 3000 ****)
-     
-
----- Mass_balance  =E=  
-
-Mass_balance(June)..  - X_div(June) - X_res(June) - X_spill(June) =E= -8000 ; (LHS = 0, INFES = 8000 ****)
-     
-Mass_balance(July)..  - X_div(July) + X_res(June) - X_res(July) - X_spill(July) =E= -3200 ; (LHS = 0, INFES = 3200 ****)
-     
-Mass_balance(August)..  - X_div(August) + X_res(July) - X_res(August) - X_spill(August) =E= -2000 ; (LHS = 0, INFES = 2000 ****)
-     
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 14:58:13 Page 3
-G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Column Listing      SOLVE Reservoir Using LP From line 77
-
-
----- X_div  Amount of Water to Divert each month (ac-ft)
-
-X_div(June)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-     -150       Profit
-       -1       Mass_balance(June)
-
-X_div(July)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-     -170       Profit
-       -1       Mass_balance(July)
-
-X_div(August)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-     -425       Profit
-       -1       Mass_balance(August)
-
-
----- X_res  Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-
-X_res(June)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-        1       Capacity(June)
-        1       Protection_level(June)
-       -1       Mass_balance(June)
-        1       Mass_balance(July)
-
-X_res(July)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-        1       Capacity(July)
-        1       Protection_level(July)
-       -1       Mass_balance(July)
-        1       Mass_balance(August)
-
-X_res(August)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-        1       Capacity(August)
-        1       Protection_level(August)
-       -1       Mass_balance(August)
-
-
----- X_spill  Amount of Water to spill over each month (ac-ft)
-
-X_spill(June)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-       -1       Mass_balance(June)
-
-X_spill(July)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-       -1       Mass_balance(July)
-
-X_spill(August)
-                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-       -1       Mass_balance(August)
-
-
----- total_benefits  the total amount of profit ($)
-
-total_benefits
-                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
-        1       Profit
-
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 14:58:13 Page 4
-G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Range Statistics    SOLVE Reservoir Using LP From line 77
-
-
-RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
-
-RHS       [min, max] : [ 2.000E+03, 9.000E+03] - Zero values observed as well
-Bound     [min, max] : [        NA,        NA] - Zero values observed as well
-Matrix    [min, max] : [ 1.000E+00, 4.250E+02]
-
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 14:58:13 Page 5
-G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Model Statistics    SOLVE Reservoir Using LP From line 77
-
-
-MODEL STATISTICS
-
-BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           10
-BLOCKS OF VARIABLES           4     SINGLE VARIABLES           10
-NON ZERO ELEMENTS            21
-
-
-GENERATION TIME      =        0.007 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 14:58:13 Page 6
-G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Solution Report     SOLVE Reservoir Using LP From line 77
-
-
-               S O L V E      S U M M A R Y
-
-     MODEL   Reservoir           OBJECTIVE  total_benefits
-     TYPE    LP                  DIRECTION  MAXIMIZE
-     SOLVER  CPLEX               FROM LINE  77
-
-**** SOLVER STATUS     1 Normal Completion
-**** MODEL STATUS      1 Optimal
-**** OBJECTIVE VALUE          3774000.0000
-
- RESOURCE USAGE, LIMIT          0.005 10000000000.000
- ITERATION COUNT, LIMIT         0    2147483647
-*** This solver runs with a community license.
---- GMO setup time: 0.00s
---- GMO memory 0.50 Mb (peak 0.50 Mb)
---- Dictionary memory 0.00 Mb
---- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
---- Starting Cplex
-
-
---- LP status (1): optimal.
---- Cplex Time: 0.00sec (det. 0.01 ticks)
-
-
-Optimal solution found
-Objective:      3774000.000000
-
-
-                           LOWER          LEVEL          UPPER         MARGINAL
-
----- EQU Profit              .              .              .             1.0000      
-
----- EQU Capacity  
-
-              LOWER          LEVEL          UPPER         MARGINAL
-
-June          -INF         8000.0000      9000.0000          .          
-July          -INF         9000.0000      9000.0000       255.0000      
-August        -INF         3000.0000      9000.0000          .          
-
----- EQU Protection_level  
-
-              LOWER          LEVEL          UPPER         MARGINAL
-
-June        3000.0000      8000.0000        +INF             .          
-July        3000.0000      9000.0000        +INF             .          
-August      3000.0000      3000.0000        +INF         -425.0000      
-
----- EQU Mass_balance  
-
-              LOWER          LEVEL          UPPER         MARGINAL
-
-June       -8000.0000     -8000.0000     -8000.0000      -170.0000      
-July       -3200.0000     -3200.0000     -3200.0000      -170.0000      
-August     -2000.0000     -2000.0000     -2000.0000      -425.0000      
-
----- VAR X_div  Amount of Water to Divert each month (ac-ft)
-
-              LOWER          LEVEL          UPPER         MARGINAL
-
-June            .              .            +INF          -20.0000      
-July            .          2200.0000        +INF             .          
-August          .          8000.0000        +INF             .          
-
----- VAR X_res  Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-
-              LOWER          LEVEL          UPPER         MARGINAL
-
-June            .          8000.0000        +INF             .          
-July            .          9000.0000        +INF             .          
-August          .          3000.0000        +INF             .          
-
----- VAR X_spill  Amount of Water to spill over each month (ac-ft)
-
-              LOWER          LEVEL          UPPER         MARGINAL
-
-June            .              .            +INF         -170.0000      
-July            .              .            +INF         -170.0000      
-August          .              .            +INF         -425.0000      
-
-                           LOWER          LEVEL          UPPER         MARGINAL
-
----- VAR total_ben~        -INF      3774000.0000        +INF             .          
-
-  total_benefits  the total amount of profit ($)
-
-
-**** REPORT SUMMARY :        0     NONOPT
-                             0 INFEASIBLE
-                             0  UNBOUNDED
-
-
-EXECUTION TIME       =        0.066 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+  34   
+  35  * 2. Define Input Data
+  36  Parameters
+  37      c(t) Objective Function Coeffiecients ($ per ac-ft)
+  38      /June 150, July 170, August 425/
+  39   
+  40      inflow(t) Inflow input data (ac-ft)
+  41      /June 5000, July 3200, August 2000/;
+  42   
+  43  Positive Variables
+  44  *    X_div(t) Amount of Water to Divert each month (ac-ft)
+  45  *    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
+  46  *    X_spill(t) Amount of Water to spill over each month (ac-ft);
+  47      X(loc, t);
+  48   
+  49  Variables
+  50      total_benefits the total amount of profit ($)
+  51      Max_level the maximum capacity of the resevoir
+  52      Min_level the resevoir protection level;
+  53   
+  54  *Max_level = 9000;
+  55  *Min_level = 3000;
+  56   
+  57  * Defining equations
+  58  Equations
+  59      Profit
+  60      Capacity
+  61      Protection_level
+  62      Mass_balance;
+  63   
+  64  * Objective Function
+  65  Profit.. total_benefits =E= sum(t, c(t)*X(ord(1), t);
+****                                              $145,148,8,409
+****   8  ')' expected
+**** 145  Set identifier or quoted element expected
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  66  *Capacity(t).. X_res(t) =L= Max_level;
+  67  *Protection_level(t).. X_res(t) =G= Min_level;
+  68   
+  69  * Constrain Equations
+  70  Capacity(t).. X(ord(2),t) =L= 9000;
+****                    $145,148,37,409
+****  37  '=l=' or '=e=' or '=g=' operator expected
+**** 145  Set identifier or quoted element expected
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  71  Protection_level(t).. X(ord(2), t) =G= 3000;
+****                            $145,148,37,409
+****  37  '=l=' or '=e=' or '=g=' operator expected
+**** 145  Set identifier or quoted element expected
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  72  Mass_balance(t).. inflow(t) - X(ord(1),t) - X(ord(3),t) =E= X(ord(2),t) - 3000 $(ord(t) = 1)  - X(ord(2),t-1);
+****                                    $145,148,37,409
+****  37  '=l=' or '=e=' or '=g=' operator expected
+**** 145  Set identifier or quoted element expected
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  73   
+  74  * Create the model
+  75  Model Reservoir /all/;
+  76   
+  77   
+  78  * Run the model using Linear method
+  79  Solve Reservoir using LP maximing total_benefits;
+****                                                  $257
+**** 257  Solve statement not checked because of previous errors
+
+**** 17 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.004 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
 
 
 USER: Course License                                 G260818+0003Ac-GEN
@@ -317,3 +126,5 @@ USER: Course License                                 G260818+0003Ac-GEN
 
 Input      /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW3/reservoir_operation.gms
 Output     /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW3/reservoir_operation.lst
+
+**** USER ERROR(S) ENCOUNTERED
