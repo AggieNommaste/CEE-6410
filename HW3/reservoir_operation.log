@@ -1,5 +1,5 @@
 
---- Job reservoir_operation.gms Start 09/29/26 14:58:13 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
+--- Job reservoir_operation.gms Start 09/29/26 16:14:28 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
 --- Applying:
     /Library/Frameworks/GAMS.framework/Versions/54/Resources/gmsprmun.txt
 --- GAMS Parameters defined
@@ -17,22 +17,22 @@ Licensee: Course License                                 G260818+0003Ac-GEN
           Utah State University                                     DCE5615
           225a/gamslice.dat
           1d9a2824-f32d-4897
-          node:25800005 mem:8 cores:8 ipport:51787 v:2                     
+          node:25800005 mem:8 cores:8 ipport:52234 v:2                     
           Course license for use within the course and related course work
           The time-limited license stops working on : Jun 14, 2027
 System information: 8 physical cores and 8 Gb physical memory detected
 GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
 --- Starting compilation
---- reservoir_operation.gms(77) 3 Mb
---- Starting execution: elapsed 0:00:00.005
+--- reservoir_operation.gms(81) 3 Mb
+--- Starting execution: elapsed 0:00:00.006
 --- Generating LP model Reservoir
---- reservoir_operation.gms(77) 4 Mb
+--- reservoir_operation.gms(81) 4 Mb
 ---   10 rows  10 columns  21 non-zeroes
 --- Range statistics (absolute non-zero finite values)
 --- RHS       [min, max] : [ 2.000E+03, 9.000E+03] - Zero values observed as well
 --- Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 --- Matrix    [min, max] : [ 1.000E+00, 4.250E+02]
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.012
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.013
 
 IBM ILOG CPLEX   54.4.0 9a60ae27 Sep 9, 2026           DAC arm 64bit/macOS    
 
@@ -52,8 +52,8 @@ CPXPARAM_MIP_Pool_Capacity                       0
 CPXPARAM_Preprocessing_QCPDuals                  0
 CPXPARAM_MIP_Tolerances_AbsMIPGap                0
 Tried aggregator 1 time.
-LP Presolve eliminated 8 rows and 9 columns.
-Aggregator did 1 substitutions.
+LP Presolve eliminated 7 rows and 8 columns.
+Aggregator did 2 substitutions.
 All rows and columns eliminated.
 Presolve time = 0.00 sec. (0.01 ticks)
 
@@ -66,4 +66,4 @@ Objective:      3774000.000000
 
 --- Reading solution for model Reservoir
 *** Status: Normal completion
---- Job reservoir_operation.gms Stop 09/29/26 14:58:13 elapsed 0:00:00.071
+--- Job reservoir_operation.gms Stop 09/29/26 16:14:28 elapsed 0:00:00.064

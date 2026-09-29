@@ -29,6 +29,7 @@ $offText
 * 1. Define the Sets
 Sets
 t Time of Month /June, July, August/
+loc Location in the Network /Div, Res, Spill/;
 
 
 * 2. Define Input Data
@@ -37,41 +38,38 @@ Parameters
     /June 150, July 170, August 425/
     
     inflow(t) Inflow input data (ac-ft)
-    /June 5000, July 3200, August 2000/;
+    /June 5000, July 3200, August 2000/
     
+    init_storage inital resevoir storage /3000/
+    max_storage the max capacity of the resevoir/9000/;
+ 
+* 3. Define Variables   
 Positive Variables
-    X_div(t) Amount of Water to Divert each month (ac-ft)
-    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-    X_spill(t) Amount of Water to spill over each month (ac-ft);
-
-Variables
-    total_benefits the total amount of profit ($)
-    Max_level the maximum capacity of the resevoir (ac-ft)
-    Min_level the resevoir protection level (ac-ft);
+    X(loc, t) Decision Variables for location of water in the network for each month;
     
-*Max_level = 9000;
-*Min_level = 3000;
+Variables
+    total_benefits the total amount of profit ($);
 
-* Defining equations
+
+* 4. Define equations
 Equations
-    Profit
-    Capacity
-    Protection_level
-    Mass_balance;
+    Profit Objective Function
+    Capacity Resevoir Capacity
+    Ending_Storage Ending storage must be greater than initial storage
+    Mass_balance Mass balance equation;
 
 * Objective Function
-Profit.. total_benefits =E= sum(t, c(t)*X_div(t)) + sum(t, 0*X_res(t)) + sum(t, 0*X_spill(t));
-*Capacity(t).. X_res(t) =L= Max_level;
-*Protection_level(t).. X_res(t) =G= Min_level;
+Profit.. total_benefits =E= sum(t, c(t)*X("Div", t));
+
 
 * Constrain Equations
-Capacity(t).. X_res(t) =L= 9000;
-Protection_level(t).. X_res(t) =G= 3000;
-Mass_balance(t).. inflow(t) - X_div(t) - X_spill(t) =E= X_res(t) - 3000 $(ord(t) = 1)  - X_res(t-1);
+Capacity(t).. X("Res",t) =L= max_storage;
+Ending_Storage(t).. X("Res", "August") =G= init_storage;
+Mass_balance(t).. inflow(t) - X("Div",t) - X("Spill",t) =E= X("Res",t) - init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
 
-* Create the model
+* 5. Create the model using all of the defined equations
 Model Reservoir /all/;
 
 
-* Run the model using Linear method
+* 6. Solve the model and create a .lst file
 Solve Reservoir using LP maximing total_benefits;

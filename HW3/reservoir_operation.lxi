@@ -1,22 +1,18 @@
 B 3 C o m p i l a t i o n
-B 86 Equation Listing    SOLVE Reservoir Using LP From line 77
-D 89 Profit
-D 94 Capacity
-D 103 Protection_level
-D 112 Mass_balance
-B 122 Column Listing      SOLVE Reservoir Using LP From line 77
-E 125 X_div
-E 143 X_res
-E 166 X_spill
-E 181 total_benefits
-B 189 Range Statistics    SOLVE Reservoir Using LP From line 77
-B 200 Model Statistics    SOLVE Reservoir Using LP From line 77
-B 213 Solution Report     SOLVE Reservoir Using LP From line 77
-F 246 Profit
-F 248 Capacity
-F 256 Protection_level
-F 264 Mass_balance
-G 272 X_div
-G 280 X_res
-G 288 X_spill
-G 298 total_benefits
+B 90 Equation Listing    SOLVE Reservoir Using LP From line 81
+D 93 Profit
+D 98 Capacity
+D 107 Ending_Storage
+D 116 Mass_balance
+B 126 Column Listing      SOLVE Reservoir Using LP From line 81
+E 129 X
+E 148 total_benefits
+B 156 Range Statistics    SOLVE Reservoir Using LP From line 81
+B 167 Model Statistics    SOLVE Reservoir Using LP From line 81
+B 180 Solution Report     SOLVE Reservoir Using LP From line 81
+F 213 Profit
+F 215 Capacity
+F 223 Ending_Storage
+F 231 Mass_balance
+G 239 X
+G 255 total_benefits
