@@ -1,4 +1,4 @@
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 15:18:45 Page 1
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -32,7 +32,7 @@ C o m p i l a t i o n
   29  * 1. Define the Sets
   30  Sets
   31  t Time of Month /June, July, August/
-  32  loc Choice of Location /Div, Res, Spill/;
+  32  loc Location in the Network /Div, Res, Spill/;
   33   
   34   
   35  * 2. Define Input Data
@@ -41,80 +41,228 @@ C o m p i l a t i o n
   38      /June 150, July 170, August 425/
   39   
   40      inflow(t) Inflow input data (ac-ft)
-  41      /June 5000, July 3200, August 2000/;
+  41      /June 5000, July 3200, August 2000/
   42   
-  43  Positive Variables
-  44  *    X_div(t) Amount of Water to Divert each month (ac-ft)
-  45  *    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-  46  *    X_spill(t) Amount of Water to spill over each month (ac-ft);
-  47      X(loc, t);
-  48   
-  49  Variables
-  50      total_benefits the total amount of profit ($)
-  51      Max_level the maximum capacity of the resevoir
-  52      Min_level the resevoir protection level;
-  53   
-  54  *Max_level = 9000;
-  55  *Min_level = 3000;
+  43      init_storage /3000/
+  44      max_storage /9000/;
+  45   
+  46  Positive Variables
+  47  *    X_div(t) Amount of Water to Divert each month (ac-ft)
+  48  *    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
+  49  *    X_spill(t) Amount of Water to spill over each month (ac-ft);
+  50      X(loc, t);
+  51   
+  52  Variables
+  53      total_benefits the total amount of profit ($)
+  54   
+  55   
   56   
-  57  * Defining equations
-  58  Equations
-  59      Profit
-  60      Capacity
-  61      Protection_level
-  62      Mass_balance;
-  63   
-  64  * Objective Function
-  65  Profit.. total_benefits =E= sum(t, c(t)*X(ord(1), t);
-****                                              $145,148,8,409
-****   8  ')' expected
-**** 145  Set identifier or quoted element expected
-**** 148  Dimension different - The symbol is referenced with more/less
-****         indices as declared
-**** 409  Unrecognizable item - skip to find a new statement
-****        looking for a ';' or a key word to get started again
-  66  *Capacity(t).. X_res(t) =L= Max_level;
-  67  *Protection_level(t).. X_res(t) =G= Min_level;
+  57   
+  58  * Defining equations
+  59  Equations
+  60      Profit
+  61      Capacity the Resevoir Capacity
+  62      Ending_Storage Ending storage must be greater than initial storage
+  63      Mass_balance Mass balance equation;
+  64   
+  65  * Objective Function
+  66  Profit.. total_benefits =E= sum(t, c(t)*X("Div", t));
+  67   
   68   
   69  * Constrain Equations
-  70  Capacity(t).. X(ord(2),t) =L= 9000;
-****                    $145,148,37,409
-****  37  '=l=' or '=e=' or '=g=' operator expected
-**** 145  Set identifier or quoted element expected
-**** 148  Dimension different - The symbol is referenced with more/less
-****         indices as declared
-**** 409  Unrecognizable item - skip to find a new statement
-****        looking for a ';' or a key word to get started again
-  71  Protection_level(t).. X(ord(2), t) =G= 3000;
-****                            $145,148,37,409
-****  37  '=l=' or '=e=' or '=g=' operator expected
-**** 145  Set identifier or quoted element expected
-**** 148  Dimension different - The symbol is referenced with more/less
-****         indices as declared
-**** 409  Unrecognizable item - skip to find a new statement
-****        looking for a ';' or a key word to get started again
-  72  Mass_balance(t).. inflow(t) - X(ord(1),t) - X(ord(3),t) =E= X(ord(2),t) - 3000 $(ord(t) = 1)  - X(ord(2),t-1);
-****                                    $145,148,37,409
-****  37  '=l=' or '=e=' or '=g=' operator expected
-**** 145  Set identifier or quoted element expected
-**** 148  Dimension different - The symbol is referenced with more/less
-****         indices as declared
-**** 409  Unrecognizable item - skip to find a new statement
-****        looking for a ';' or a key word to get started again
-  73   
-  74  * Create the model
-  75  Model Reservoir /all/;
-  76   
-  77   
-  78  * Run the model using Linear method
-  79  Solve Reservoir using LP maximing total_benefits;
-****                                                  $257
-**** 257  Solve statement not checked because of previous errors
-
-**** 17 ERROR(S)   0 WARNING(S)
+  70  *Capacity(t).. X_res(t) =L= Max_level;
+  71  *Protection_level(t).. X_res(t) =G= Min_level;
+  72  Capacity(t).. X("Res",t) =L= max_storage;
+  73  Ending_Storage(t).. X("Res", "August") =G= init_storage;
+  74  Mass_balance(t).. inflow(t) - X("Div",t) - X("Spill",t) =E= X("Res",t) - init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
+  75   
+  76  * Create the model
+  77  Model Reservoir /all/;
+  78   
+  79   
+  80  * Run the model using Linear method
+  81  Solve Reservoir using LP maximing total_benefits;
 
 
-COMPILATION TIME     =        0.004 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
+COMPILATION TIME     =        0.001 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Reservoir Using LP From line 81
+
+
+---- Profit  =E=  
+
+Profit..  - 150*X(Div,June) - 170*X(Div,July) - 425*X(Div,August) + total_benefits =E= 0 ; (LHS = 0)
+     
+
+---- Capacity  =L=  the Resevoir Capacity
+
+Capacity(June)..  X(Res,June) =L= 9000 ; (LHS = 0)
+     
+Capacity(July)..  X(Res,July) =L= 9000 ; (LHS = 0)
+     
+Capacity(August)..  X(Res,August) =L= 9000 ; (LHS = 0)
+     
+
+---- Ending_Storage  =G=  Ending storage must be greater than initial storage
+
+Ending_Storage(June)..  X(Res,August) =G= 3000 ; (LHS = 0, INFES = 3000 ****)
+     
+Ending_Storage(July)..  X(Res,August) =G= 3000 ; (LHS = 0, INFES = 3000 ****)
+     
+Ending_Storage(August)..  X(Res,August) =G= 3000 ; (LHS = 0, INFES = 3000 ****)
+     
+
+---- Mass_balance  =E=  Mass balance equation
+
+Mass_balance(June)..  - X(Div,June) - X(Res,June) - X(Spill,June) =E= -8000 ; (LHS = 0, INFES = 8000 ****)
+     
+Mass_balance(July)..  - X(Div,July) + X(Res,June) - X(Res,July) - X(Spill,July) =E= -3200 ; (LHS = 0, INFES = 3200 ****)
+     
+Mass_balance(August)..  - X(Div,August) + X(Res,July) - X(Res,August) - X(Spill,August) =E= -2000 ; (LHS = 0, INFES = 2000 ****)
+     
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Reservoir Using LP From line 81
+
+
+---- X  
+
+X(Div,June)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -150       Profit
+       -1       Mass_balance(June)
+
+X(Div,July)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -170       Profit
+       -1       Mass_balance(July)
+
+X(Div,August)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -425       Profit
+       -1       Mass_balance(August)
+
+REMAINING 6 ENTRIES SKIPPED
+
+---- total_benefits  the total amount of profit ($)
+
+total_benefits
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       Profit
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Reservoir Using LP From line 81
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+03, 9.000E+03] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.250E+02]
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Reservoir Using LP From line 81
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           10
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           10
+NON ZERO ELEMENTS            21
+
+
+GENERATION TIME      =        0.007 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Reservoir Using LP From line 81
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Reservoir           OBJECTIVE  total_benefits
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  81
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE          3774000.0000
+
+ RESOURCE USAGE, LIMIT          0.005 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+
+Optimal solution found
+Objective:      3774000.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Profit              .              .              .             1.0000      
+
+---- EQU Capacity  the Resevoir Capacity
+
+              LOWER          LEVEL          UPPER         MARGINAL
+
+June          -INF         8000.0000      9000.0000          .          
+July          -INF         9000.0000      9000.0000       255.0000      
+August        -INF         3000.0000      9000.0000          .          
+
+---- EQU Ending_Storage  Ending storage must be greater than initial storage
+
+              LOWER          LEVEL          UPPER         MARGINAL
+
+June        3000.0000      3000.0000        +INF         -425.0000      
+July        3000.0000      3000.0000        +INF             .          
+August      3000.0000      3000.0000        +INF             .          
+
+---- EQU Mass_balance  Mass balance equation
+
+              LOWER          LEVEL          UPPER         MARGINAL
+
+June       -8000.0000     -8000.0000     -8000.0000      -170.0000      
+July       -3200.0000     -3200.0000     -3200.0000      -170.0000      
+August     -2000.0000     -2000.0000     -2000.0000      -425.0000      
+
+---- VAR X  
+
+                    LOWER          LEVEL          UPPER         MARGINAL
+
+Div  .June            .              .            +INF          -20.0000      
+Div  .July            .          2200.0000        +INF             .          
+Div  .August          .          8000.0000        +INF             .          
+Res  .June            .          8000.0000        +INF             .          
+Res  .July            .          9000.0000        +INF             .          
+Res  .August          .          3000.0000        +INF             .          
+Spill.June            .              .            +INF         -170.0000      
+Spill.July            .              .            +INF         -170.0000      
+Spill.August          .              .            +INF         -425.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR total_ben~        -INF      3774000.0000        +INF             .          
+
+  total_benefits  the total amount of profit ($)
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.058 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
 
 
 USER: Course License                                 G260818+0003Ac-GEN
@@ -126,5 +274,3 @@ USER: Course License                                 G260818+0003Ac-GEN
 
 Input      /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW3/reservoir_operation.gms
 Output     /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW3/reservoir_operation.lst
-
-**** USER ERROR(S) ENCOUNTERED
