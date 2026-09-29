@@ -40,30 +40,38 @@ Parameters
     /June 5000, July 3200, August 2000/;
     
 Positive Variables
-    X_div(t)
-    X_res(t)
-    X_spill(t);
+    X_div(t) Amount of Water to Divert each month (ac-ft)
+    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
+    X_spill(t) Amount of Water to spill over each month (ac-ft);
+
 Variables
-    total_benefits
-    Max_level
-    Min_level;
+    total_benefits the total amount of profit ($)
+    Max_level the maximum capacity of the resevoir
+    Min_level the resevoir protection level;
     
 *Max_level = 9000;
 *Min_level = 3000;
 
+* Defining equations
 Equations
     Profit
     Capacity
     Protection_level
     Mass_balance;
 
+* Objective Function
 Profit.. total_benefits =E= sum(t, c(t)*X_div(t)) + sum(t, 0*X_res(t)) + sum(t, 0*X_spill(t));
 *Capacity(t).. X_res(t) =L= Max_level;
 *Protection_level(t).. X_res(t) =G= Min_level;
+
+* Constrain Equations
 Capacity(t).. X_res(t) =L= 9000;
 Protection_level(t).. X_res(t) =G= 3000;
 Mass_balance(t).. inflow(t) - X_div(t) - X_spill(t) =E= X_res(t) - 3000 $(ord(t) = 1)  - X_res(t-1);
 
+* Create the model
 Model Reservoir /all/;
 
+
+* Run the model using Linear method
 Solve Reservoir using LP maximing total_benefits;
