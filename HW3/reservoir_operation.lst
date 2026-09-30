@@ -1,4 +1,4 @@
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 1
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 19:35:05 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -43,59 +43,53 @@ C o m p i l a t i o n
   40      inflow(t) Inflow input data (ac-ft)
   41      /June 5000, July 3200, August 2000/
   42   
-  43      init_storage /3000/
-  44      max_storage /9000/;
+  43      init_storage inital reservoir storage /3000/
+  44      max_storage the max capacity of the reservoir/9000/;
   45   
-  46  Positive Variables
-  47  *    X_div(t) Amount of Water to Divert each month (ac-ft)
-  48  *    X_res(t) Amount of Water to keep in the Resevoir at the end of each month (ac-ft)
-  49  *    X_spill(t) Amount of Water to spill over each month (ac-ft);
-  50      X(loc, t);
-  51   
-  52  Variables
-  53      total_benefits the total amount of profit ($)
-  54   
-  55   
-  56   
-  57   
-  58  * Defining equations
-  59  Equations
-  60      Profit
-  61      Capacity the Resevoir Capacity
-  62      Ending_Storage Ending storage must be greater than initial storage
-  63      Mass_balance Mass balance equation;
+  46  * 3. Define Variables
+  47  Positive Variables
+  48      X(loc, t) Decision Variables for location of water in the network for each month;
+  49   
+  50  Variables
+  51      total_benefits the total amount of profit ($);
+  52   
+  53   
+  54  * 4. Define equations
+  55  Equations
+  56      Profit Objective Function
+  57      Capacity Reservoir Capacity
+  58      Ending_Storage Ending storage must be greater than initial storage
+  59      Mass_balance Mass balance equation;
+  60   
+  61  * Objective Function
+  62  Profit.. total_benefits =E= sum(t, c(t)*X("Div", t));
+  63   
   64   
-  65  * Objective Function
-  66  Profit.. total_benefits =E= sum(t, c(t)*X("Div", t));
-  67   
-  68   
-  69  * Constrain Equations
-  70  *Capacity(t).. X_res(t) =L= Max_level;
-  71  *Protection_level(t).. X_res(t) =G= Min_level;
-  72  Capacity(t).. X("Res",t) =L= max_storage;
-  73  Ending_Storage(t).. X("Res", "August") =G= init_storage;
-  74  Mass_balance(t).. inflow(t) - X("Div",t) - X("Spill",t) =E= X("Res",t) - init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
-  75   
-  76  * Create the model
-  77  Model Reservoir /all/;
-  78   
-  79   
-  80  * Run the model using Linear method
-  81  Solve Reservoir using LP maximing total_benefits;
+  65  * Constrain Equations
+  66  Capacity(t).. X("Res",t) =L= max_storage;
+  67  Ending_Storage(t).. X("Res", "August") =G= init_storage;
+  68  Mass_balance(t).. inflow(t) - X("Div",t) - X("Spill",t) =E= X("Res",t) - init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
+  69   
+  70  * 5. Create the model using all of the defined equations
+  71  Model Reservoir /all/;
+  72   
+  73   
+  74  * 6. Solve the model and create a .lst file
+  75  Solve Reservoir using LP maximing total_benefits;
 
 
-COMPILATION TIME     =        0.001 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 2
+COMPILATION TIME     =        0.002 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 19:35:05 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Equation Listing    SOLVE Reservoir Using LP From line 81
+Equation Listing    SOLVE Reservoir Using LP From line 75
 
 
----- Profit  =E=  
+---- Profit  =E=  Objective Function
 
 Profit..  - 150*X(Div,June) - 170*X(Div,July) - 425*X(Div,August) + total_benefits =E= 0 ; (LHS = 0)
      
 
----- Capacity  =L=  the Resevoir Capacity
+---- Capacity  =L=  Reservoir Capacity
 
 Capacity(June)..  X(Res,June) =L= 9000 ; (LHS = 0)
      
@@ -121,12 +115,12 @@ Mass_balance(July)..  - X(Div,July) + X(Res,June) - X(Res,July) - X(Spill,July) 
      
 Mass_balance(August)..  - X(Div,August) + X(Res,July) - X(Res,August) - X(Spill,August) =E= -2000 ; (LHS = 0, INFES = 2000 ****)
      
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 3
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 19:35:05 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Column Listing      SOLVE Reservoir Using LP From line 81
+Column Listing      SOLVE Reservoir Using LP From line 75
 
 
----- X  
+---- X  Decision Variables for location of water in the network for each month
 
 X(Div,June)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
@@ -151,9 +145,9 @@ total_benefits
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       Profit
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 4
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 19:35:05 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Range Statistics    SOLVE Reservoir Using LP From line 81
+Range Statistics    SOLVE Reservoir Using LP From line 75
 
 
 RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
@@ -162,9 +156,9 @@ RHS       [min, max] : [ 2.000E+03, 9.000E+03] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 4.250E+02]
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 5
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 19:35:05 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Model Statistics    SOLVE Reservoir Using LP From line 81
+Model Statistics    SOLVE Reservoir Using LP From line 75
 
 
 MODEL STATISTICS
@@ -174,23 +168,23 @@ BLOCKS OF VARIABLES           2     SINGLE VARIABLES           10
 NON ZERO ELEMENTS            21
 
 
-GENERATION TIME      =        0.007 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 16:14:28 Page 6
+GENERATION TIME      =        0.017 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 09/29/26 19:35:05 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Solution Report     SOLVE Reservoir Using LP From line 81
+Solution Report     SOLVE Reservoir Using LP From line 75
 
 
                S O L V E      S U M M A R Y
 
      MODEL   Reservoir           OBJECTIVE  total_benefits
      TYPE    LP                  DIRECTION  MAXIMIZE
-     SOLVER  CPLEX               FROM LINE  81
+     SOLVER  CPLEX               FROM LINE  75
 
 **** SOLVER STATUS     1 Normal Completion
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE          3774000.0000
 
- RESOURCE USAGE, LIMIT          0.005 10000000000.000
+ RESOURCE USAGE, LIMIT          0.003 10000000000.000
  ITERATION COUNT, LIMIT         0    2147483647
 *** This solver runs with a community license.
 --- GMO setup time: 0.00s
@@ -212,7 +206,9 @@ Objective:      3774000.000000
 
 ---- EQU Profit              .              .              .             1.0000      
 
----- EQU Capacity  the Resevoir Capacity
+  Profit  Objective Function
+
+---- EQU Capacity  Reservoir Capacity
 
               LOWER          LEVEL          UPPER         MARGINAL
 
@@ -236,7 +232,7 @@ June       -8000.0000     -8000.0000     -8000.0000      -170.0000
 July       -3200.0000     -3200.0000     -3200.0000      -170.0000      
 August     -2000.0000     -2000.0000     -2000.0000      -425.0000      
 
----- VAR X  
+---- VAR X  Decision Variables for location of water in the network for each month
 
                     LOWER          LEVEL          UPPER         MARGINAL
 
@@ -262,7 +258,7 @@ Spill.August          .              .            +INF         -425.0000
                              0  UNBOUNDED
 
 
-EXECUTION TIME       =        0.058 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+EXECUTION TIME       =        0.117 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
 
 
 USER: Course License                                 G260818+0003Ac-GEN

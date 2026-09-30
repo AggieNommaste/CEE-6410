@@ -40,8 +40,8 @@ Parameters
     inflow(t) Inflow input data (ac-ft)
     /June 5000, July 3200, August 2000/
     
-    init_storage inital resevoir storage /3000/
-    max_storage the max capacity of the resevoir/9000/;
+    init_storage inital reservoir storage /3000/
+    max_storage the max capacity of the reservoir/9000/;
  
 * 3. Define Variables   
 Positive Variables
@@ -54,7 +54,7 @@ Variables
 * 4. Define equations
 Equations
     Profit Objective Function
-    Capacity Resevoir Capacity
+    Capacity Reservoir Capacity
     Ending_Storage Ending storage must be greater than initial storage
     Mass_balance Mass balance equation;
 
