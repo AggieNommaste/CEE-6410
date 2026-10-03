@@ -54,8 +54,8 @@ Equations
 Primal_obj Primal objective function
 Dual_obj Dual objective function
 Primal_land Primal Land constraint
-Primal_irr Primal irrigation constraint
-Dual_con Dual constraints equation;
+Primal_irr(t) Primal irrigation constraint
+Dual_con(crop) Dual constraints equation;
 
 
 * Objective Functions
