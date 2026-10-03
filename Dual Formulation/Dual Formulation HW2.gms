@@ -67,5 +67,14 @@ Primal_land.. sum(crop, X(crop) =L= max_development;
 Primal_irr(t).. sum(crop, irr(t)*X(crop)) =L= irr(t);
 
 * Dual Constraints
-Dual_con.. 
+Dual_con(crop).. Y_land+sum(t, C(crop,t)*Y(t)) =G= obj_fun_coef(crop);
+
+
+* 6. Create Models
+Model Primal /Primal_obj, Primal_land, Primal_irr/;
+Model Dual /Dual_obj, Dual_con/;
+
+* 7. Solve Models
+Solve Primal using LP maximizing MaxProfit;
+Solve Dual using LP minimizing MinProfit;
 
