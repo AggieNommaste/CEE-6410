@@ -29,8 +29,8 @@ t months /June, July, August/;
 
 * 2. Define Parameters
 Parameters
-obj_fun_coef(crop) objective function coef. ($ per acre) /100, 120/
-irr(t) the volume of water (acre-ft) accessible each month /14000, 18000, 6000/
+obj_fun_coef(crop) objective function coef. ($ per acre) /Hay 100, Grain 120/
+irr(t) the volume of water (acre-ft) accessible each month /June 14000, July 18000, August 6000/
 max_development the maximimum development (acres) /10000/;
 
 * 3. Define C matrix
@@ -63,8 +63,8 @@ Primal_obj.. sum(crop, obj_fun_coef(crop)*X(crop)) =E= MaxProfit;
 Dual_obj.. Y_land*max_development + sum(t, Y(t)*irr(t)) =E= MinProfit;
 
 * Primal Constraints
-Primal_land.. sum(crop, X(crop) =L= max_development;
-Primal_irr(t).. sum(crop, irr(t)*X(crop)) =L= irr(t);
+Primal_land.. sum(crop, X(crop)) =L= max_development;
+Primal_irr(t).. sum(crop, C(crop,t)*X(crop)) =L= irr(t);
 
 * Dual Constraints
 Dual_con(crop).. Y_land+sum(t, C(crop,t)*Y(t)) =G= obj_fun_coef(crop);

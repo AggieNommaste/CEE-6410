@@ -1,0 +1,392 @@
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      USU
+      CEE 6410
+      Homework 2
+      Irrigation Problem
+       
+      An aqueduct constructed to supply water to industrial users has an excess capacity in the months
+      of June, July, and August of 14,000 acft, 18,000 acft, and 6,000 acft, respectively. It is
+      proposed to develop not more than 10,000 acres of new land by utilizing the excess aqueduct
+      capacity for irrigation water deliveries. Two crops, hay and grain, are to be grown. Their
+      monthly water requirements and expected net returns are given in the following table:
+      Monthly Water Requirement (acft/acre)
+              June July August    Return, $/acre
+      Hay       2    1    1            100
+      Grain     1    2    0            120
+       
+       
+      Ammon Wallace
+      Ammon Wallace
+      CEE 6410
+      ammon.wallace@usu.edu
+  23   
+  24   
+  25  * 1. Define Sets
+  26  Sets
+  27  crop different crops /Hay, Grain/
+  28  t months /June, July, August/;
+  29   
+  30  * 2. Define Parameters
+  31  Parameters
+  32  obj_fun_coef(crop) objective function coef. ($ per acre) /Hay 100, Grain 120/
+  33  irr(t) the volume of water (acre-ft) accessible each month /June 14000, July 18000, August 6000/
+  34  max_development the maximimum development (acres) /10000/;
+  35   
+  36  * 3. Define C matrix
+  37  Table C(crop, t) Water requirements for each crop per month
+  38          June    July    August
+  39  Hay       2       1        1
+  40  Grain     1       2        0;
+  41   
+  42  * 4. Define Variables
+  43  Positive Variables
+  44  Y_land Dual objective function variable [$ per acre]
+  45  Y(t) Dual objective function variables [S per acre-ft]
+  46  X(crop) Primal objective function variables [amount of hay and grain in acres];
+  47   
+  48  Variables
+  49  MaxProfit maximize primal obj. function
+  50  MinProfit minimize dual obj. function;
+  51   
+  52  * 5. Define Equations
+  53  Equations
+  54  Primal_obj Primal objective function
+  55  Dual_obj Dual objective function
+  56  Primal_land Primal Land constraint
+  57  Primal_irr Primal irrigation constraint
+  58  Dual_con Dual constraints equation;
+  59   
+  60   
+  61  * Objective Functions
+  62  Primal_obj.. sum(crop, obj_fun_coef(crop)*X(crop)) =E= MaxProfit;
+  63  Dual_obj.. Y_land*max_development + sum(t, Y(t)*irr(t)) =E= MinProfit;
+  64   
+  65  * Primal Constraints
+  66  Primal_land.. sum(crop, X(crop)) =L= max_development;
+  67  Primal_irr(t).. sum(crop, C(crop,t)*X(crop)) =L= irr(t);
+  68   
+  69  * Dual Constraints
+  70  Dual_con(crop).. Y_land+sum(t, C(crop,t)*Y(t)) =G= obj_fun_coef(crop);
+  71   
+  72   
+  73  * 6. Create Models
+  74  Model Primal /Primal_obj, Primal_land, Primal_irr/;
+  75  Model Dual /Dual_obj, Dual_con/;
+  76   
+  77  * 7. Solve Models
+  78  Solve Primal using LP maximizing MaxProfit;
+  79  Solve Dual using LP minimizing MinProfit;
+  80   
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Primal Using LP From line 78
+
+
+---- Primal_obj  =E=  Primal objective function
+
+Primal_obj..  100*X(Hay) + 120*X(Grain) - MaxProfit =E= 0 ; (LHS = 0)
+     
+
+---- Primal_land  =L=  Primal Land constraint
+
+Primal_land..  X(Hay) + X(Grain) =L= 10000 ; (LHS = 0)
+     
+
+---- Primal_irr  =L=  Primal irrigation constraint
+
+Primal_irr(June)..  2*X(Hay) + X(Grain) =L= 14000 ; (LHS = 0)
+     
+Primal_irr(July)..  X(Hay) + 2*X(Grain) =L= 18000 ; (LHS = 0)
+     
+Primal_irr(August)..  X(Hay) =L= 6000 ; (LHS = 0)
+     
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Primal Using LP From line 78
+
+
+---- X  Primal objective function variables [amount of hay and grain in acres]
+
+X(Hay)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      100       Primal_obj
+        1       Primal_land
+        2       Primal_irr(June)
+        1       Primal_irr(July)
+        1       Primal_irr(August)
+
+X(Grain)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      120       Primal_obj
+        1       Primal_land
+        1       Primal_irr(June)
+        2       Primal_irr(July)
+
+
+---- MaxProfit  maximize primal obj. function
+
+MaxProfit
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       Primal_obj
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Primal Using LP From line 78
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 6.000E+03, 1.800E+04] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.200E+02]
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Primal Using LP From line 78
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            3
+NON ZERO ELEMENTS            10
+
+
+GENERATION TIME      =        0.006 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Primal Using LP From line 78
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Primal              OBJECTIVE  MaxProfit
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  78
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE          1160000.0000
+
+ RESOURCE USAGE, LIMIT          0.008 10000000000.000
+ ITERATION COUNT, LIMIT         3    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.01sec (det. 0.01 ticks)
+
+
+Optimal solution found
+Objective:      1160000.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Primal_obj          .              .              .            -1.0000      
+---- EQU Primal_la~        -INF        10000.0000     10000.0000        80.0000      
+
+  Primal_obj  Primal objective function
+  Primal_land  Primal Land constraint
+
+---- EQU Primal_irr  Primal irrigation constraint
+
+              LOWER          LEVEL          UPPER         MARGINAL
+
+June          -INF        12000.0000     14000.0000          .          
+July          -INF        18000.0000     18000.0000        20.0000      
+August        -INF         2000.0000      6000.0000          .          
+
+---- VAR X  Primal objective function variables [amount of hay and grain in acres]
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+Hay            .          2000.0000        +INF             .          
+Grain          .          8000.0000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR MaxProfit         -INF      1160000.0000        +INF             .          
+
+  MaxProfit  maximize primal obj. function
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Dual Using LP From line 79
+
+
+---- Dual_obj  =E=  Dual objective function
+
+Dual_obj..  10000*Y_land + 14000*Y(June) + 18000*Y(July) + 6000*Y(August) - MinProfit =E= 0 ; (LHS = 0)
+     
+
+---- Dual_con  =G=  Dual constraints equation
+
+Dual_con(Hay)..  Y_land + 2*Y(June) + Y(July) + Y(August) =G= 100 ; (LHS = 0, INFES = 100 ****)
+     
+Dual_con(Grain)..  Y_land + Y(June) + 2*Y(July) =G= 120 ; (LHS = 0, INFES = 120 ****)
+     
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Dual Using LP From line 79
+
+
+---- Y_land  Dual objective function variable [$ per acre]
+
+Y_land
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+    10000       Dual_obj
+        1       Dual_con(Hay)
+        1       Dual_con(Grain)
+
+
+---- Y  Dual objective function variables [S per acre-ft]
+
+Y(June)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+    14000       Dual_obj
+        2       Dual_con(Hay)
+        1       Dual_con(Grain)
+
+Y(July)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+    18000       Dual_obj
+        1       Dual_con(Hay)
+        2       Dual_con(Grain)
+
+Y(August)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     6000       Dual_obj
+        1       Dual_con(Hay)
+
+
+---- MinProfit  minimize dual obj. function
+
+MinProfit
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       Dual_obj
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 9
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Dual Using LP From line 79
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+02, 1.200E+02] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.800E+04]
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 10
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Dual Using LP From line 79
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            3
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            12
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/02/26 23:25:46 Page 11
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Dual Using LP From line 79
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Dual                OBJECTIVE  MinProfit
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  79
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE          1160000.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         2    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.00 ticks)
+
+
+Optimal solution found
+Objective:      1160000.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Dual_obj            .              .              .            -1.0000      
+
+  Dual_obj  Dual objective function
+
+---- EQU Dual_con  Dual constraints equation
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+Hay         100.0000       100.0000        +INF         2000.0000      
+Grain       120.0000       120.0000        +INF         8000.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Y_land              .            80.0000        +INF             .          
+
+  Y_land  Dual objective function variable [$ per acre]
+
+---- VAR Y  Dual objective function variables [S per acre-ft]
+
+              LOWER          LEVEL          UPPER         MARGINAL
+
+June            .              .            +INF         2000.0000      
+July            .            20.0000        +INF             .          
+August          .              .            +INF         4000.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR MinProfit         -INF      1160000.0000        +INF             .          
+
+  MinProfit  minimize dual obj. function
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.102 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+
+
+USER: Course License                                 G260818+0003Ac-GEN
+      Utah State University                                     DCE5615
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Dual Formulation/Dual Formulation HW2.gms
+Output     /Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Dual Formulation/Dual Formulation HW2.lst

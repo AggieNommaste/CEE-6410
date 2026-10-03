@@ -1,0 +1,31 @@
+B 3 C o m p i l a t i o n
+B 89 Equation Listing    SOLVE Primal Using LP From line 78
+D 92 Primal_obj
+D 97 Primal_land
+D 102 Primal_irr
+B 112 Column Listing      SOLVE Primal Using LP From line 78
+E 115 X
+E 133 MaxProfit
+B 141 Range Statistics    SOLVE Primal Using LP From line 78
+B 152 Model Statistics    SOLVE Primal Using LP From line 78
+B 165 Solution Report     SOLVE Primal Using LP From line 78
+F 198 Primal_obj
+F 199 Primal_land
+F 204 Primal_irr
+G 212 X
+G 221 MaxProfit
+B 231 Equation Listing    SOLVE Dual Using LP From line 79
+D 234 Dual_obj
+D 239 Dual_con
+B 247 Column Listing      SOLVE Dual Using LP From line 79
+E 250 Y_land
+E 259 Y
+E 279 MinProfit
+B 287 Range Statistics    SOLVE Dual Using LP From line 79
+B 298 Model Statistics    SOLVE Dual Using LP From line 79
+B 311 Solution Report     SOLVE Dual Using LP From line 79
+F 344 Dual_obj
+F 348 Dual_con
+G 357 Y_land
+G 361 Y
+G 371 MinProfit
