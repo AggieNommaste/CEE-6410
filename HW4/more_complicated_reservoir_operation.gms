@@ -79,12 +79,12 @@ Variables
 * 4. Define equations
 Equations
     Profit Objective Function
-    Res_capacity Maximum Reservoir Capacity
-    River_min_capacity Minimum river capacity
-    Turbine_capacity Maximum Turbine capacity
+    Res_capacity(t) Maximum Reservoir Capacity
+    River_min_capacity(t) Minimum river capacity
+    Turbine_capacity(t) Maximum Turbine capacity
     Ending_Storage Ending storage must be greater than initial storage
-    Res_mass_balance Mass balance equation for the reservoir
-    Junction_mass_balance Mass balance equation for the junction;
+    Res_mass_balance(t) Mass balance equation for the reservoir
+    Junction_mass_balance(t) Mass balance equation for the junction;
 
 * Objective Function
 Profit.. total_benefits =E= sum(t, hydropower_b(t)*X("Hydro", t)) + sum(t, irrigation_b(t)*X("Irr", t));
@@ -94,7 +94,7 @@ Profit.. total_benefits =E= sum(t, hydropower_b(t)*X("Hydro", t)) + sum(t, irrig
 Res_capacity(t).. X("Res",t) =L= res_max_storage;
 River_min_capacity(t).. X("River", t) =G= river_minimum_flow;
 Turbine_capacity(t).. X("Hydro", t) =L= max_capacity_hydro;
-Ending_Storage(t).. X("Res", "mon6") =G= res_init_storage;
+Ending_Storage.. X("Res", "mon6") =G= res_init_storage;
 Res_mass_balance(t).. inflow(t) - X("Hydro",t) - X("Spill",t) =E= X("Res",t) - res_init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
 Junction_mass_balance(t).. X("Spill", t) + X("Hydro", t) - X("Irr", t) =E= X("River", t);
 

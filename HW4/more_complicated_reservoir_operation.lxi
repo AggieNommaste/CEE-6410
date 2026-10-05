@@ -1,0 +1,24 @@
+B 3 C o m p i l a t i o n
+B 115 Equation Listing    SOLVE Reservoir Using LP From line 106
+D 118 Profit
+D 123 Res_capacity
+D 134 River_min_capacity
+D 145 Turbine_capacity
+D 156 Ending_Storage
+D 161 Res_mass_balance
+D 172 Junction_mass_balance
+B 184 Column Listing      SOLVE Reservoir Using LP From line 106
+E 187 X
+E 212 total_benefits
+B 220 Range Statistics    SOLVE Reservoir Using LP From line 106
+B 231 Model Statistics    SOLVE Reservoir Using LP From line 106
+B 244 Solution Report     SOLVE Reservoir Using LP From line 106
+F 277 Profit
+F 281 Res_capacity
+F 292 River_min_capacity
+F 303 Turbine_capacity
+F 316 Ending_Storage
+F 320 Res_mass_balance
+F 331 Junction_mass_balance
+G 342 X
+G 379 total_benefits
