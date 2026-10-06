@@ -1,11 +1,11 @@
 
---- Job more_complicated_reservoir_operation.gms Start 10/03/26 11:04:51 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
+--- Job more_complicated_reservoir_operation.gms Start 10/05/26 21:44:47 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
 --- Applying:
     /Library/Frameworks/GAMS.framework/Versions/54/Resources/gmsprmun.txt
 --- GAMS Parameters defined
-    Input "/Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/more_complicated_reservoir_operation.gms"
+    Input "/Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/more_complicated_reservoir_operation.gms"
     PageSize 0
-    ScrDir "/Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/225a/"
+    ScrDir "/Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/225a/"
     SysDir /Library/Frameworks/GAMS.framework/Versions/54/Resources/
     LogOption 3
     AppendLog 1
@@ -17,14 +17,14 @@ Licensee: Course License                                 G260818+0003Ac-GEN
           Utah State University                                     DCE5615
           225a/gamslice.dat
           1d9a2824-f32d-4897
-          node:25800005 mem:8 cores:8 ipport:55324 v:2                     
+          node:25800005 mem:8 cores:8 ipport:52443 v:2                     
           Course license for use within the course and related course work
           The time-limited license stops working on : Jun 14, 2027
 System information: 8 physical cores and 8 Gb physical memory detected
 GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
 --- Starting compilation
 --- more_complicated_reservoir_operation.gms(106) 3 Mb
---- Starting execution: elapsed 0:00:00.005
+--- Starting execution: elapsed 0:00:00.006
 --- Generating LP model Reservoir
 --- more_complicated_reservoir_operation.gms(106) 4 Mb
 ---   32 rows  31 columns  79 non-zeroes
@@ -32,7 +32,7 @@ GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
 --- RHS       [min, max] : [ 1.000E+00, 9.000E+00] - Zero values observed as well
 --- Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 --- Matrix    [min, max] : [ 1.000E+00, 2.200E+00]
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.012
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.016
 
 IBM ILOG CPLEX   54.4.0 9a60ae27 Sep 9, 2026           DAC arm 64bit/macOS    
 
@@ -61,7 +61,7 @@ Iteration:     1   Dual infeasibility =             9.500000
 Iteration:    11   Dual objective     =            66.200000
 
 --- LP status (1): optimal.
---- Cplex Time: 0.00sec (det. 0.06 ticks)
+--- Cplex Time: 0.01sec (det. 0.06 ticks)
 
 
 Optimal solution found
@@ -69,4 +69,4 @@ Objective:           51.600000
 
 --- Reading solution for model Reservoir
 *** Status: Normal completion
---- Job more_complicated_reservoir_operation.gms Stop 10/03/26 11:04:51 elapsed 0:00:00.059
+--- Job more_complicated_reservoir_operation.gms Stop 10/05/26 21:44:47 elapsed 0:00:00.082

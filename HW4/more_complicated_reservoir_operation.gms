@@ -96,7 +96,7 @@ River_min_capacity(t).. X("River", t) =G= river_minimum_flow;
 Turbine_capacity(t).. X("Hydro", t) =L= max_capacity_hydro;
 Ending_Storage.. X("Res", "mon6") =G= res_init_storage;
 Res_mass_balance(t).. inflow(t) - X("Hydro",t) - X("Spill",t) =E= X("Res",t) - res_init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
-Junction_mass_balance(t).. X("Spill", t) + X("Hydro", t) - X("Irr", t) =E= X("River", t);
+Junction_mass_balance(t).. X("Spill", t) + X("Hydro", t) - X("River", t) - X("Irr", t) =E= 0 ;
 
 * 5. Create the model using all of the defined equations
 Model Reservoir /all/;

@@ -1,4 +1,4 @@
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/03/26 11:04:51 Page 1
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/05/26 21:44:47 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -99,7 +99,7 @@ C o m p i l a t i o n
   96  Turbine_capacity(t).. X("Hydro", t) =L= max_capacity_hydro;
   97  Ending_Storage.. X("Res", "mon6") =G= res_init_storage;
   98  Res_mass_balance(t).. inflow(t) - X("Hydro",t) - X("Spill",t) =E= X("Res",t) - res_init_storage$(ord(t) eq 1)  - X("Res",t-1)$(ord(t) gt 1);
-  99  Junction_mass_balance(t).. X("Spill", t) + X("Hydro", t) - X("Irr", t) =E= X("River", t);
+  99  Junction_mass_balance(t).. X("Spill", t) + X("Hydro", t) - X("River", t) - X("Irr", t) =E= 0 ;
  100   
  101  * 5. Create the model using all of the defined equations
  102  Model Reservoir /all/;
@@ -109,8 +109,8 @@ C o m p i l a t i o n
  106  Solve Reservoir using LP maximing total_benefits;
 
 
-COMPILATION TIME     =        0.000 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/03/26 11:04:51 Page 2
+COMPILATION TIME     =        0.001 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/05/26 21:44:47 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Equation Listing    SOLVE Reservoir Using LP From line 106
 
@@ -179,7 +179,7 @@ Junction_mass_balance(mon3)..  X(Hydro,mon3) + X(Spill,mon3) - X(Irr,mon3) - X(R
      
 REMAINING 3 ENTRIES SKIPPED
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/03/26 11:04:51 Page 3
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/05/26 21:44:47 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Column Listing      SOLVE Reservoir Using LP From line 106
 
@@ -215,7 +215,7 @@ total_benefits
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       Profit
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/03/26 11:04:51 Page 4
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/05/26 21:44:47 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Range Statistics    SOLVE Reservoir Using LP From line 106
 
@@ -226,7 +226,7 @@ RHS       [min, max] : [ 1.000E+00, 9.000E+00] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 2.200E+00]
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/03/26 11:04:51 Page 5
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/05/26 21:44:47 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Model Statistics    SOLVE Reservoir Using LP From line 106
 
@@ -238,8 +238,8 @@ BLOCKS OF VARIABLES           2     SINGLE VARIABLES           31
 NON ZERO ELEMENTS            79
 
 
-GENERATION TIME      =        0.007 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/03/26 11:04:51 Page 6
+GENERATION TIME      =        0.010 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/05/26 21:44:47 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Solution Report     SOLVE Reservoir Using LP From line 106
 
@@ -254,7 +254,7 @@ Solution Report     SOLVE Reservoir Using LP From line 106
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE               51.6000
 
- RESOURCE USAGE, LIMIT          0.005 10000000000.000
+ RESOURCE USAGE, LIMIT          0.009 10000000000.000
  ITERATION COUNT, LIMIT        18    2147483647
 *** This solver runs with a community license.
 --- GMO setup time: 0.00s
@@ -265,7 +265,7 @@ Solution Report     SOLVE Reservoir Using LP From line 106
 
 
 --- LP status (1): optimal.
---- Cplex Time: 0.00sec (det. 0.06 ticks)
+--- Cplex Time: 0.01sec (det. 0.06 ticks)
 
 
 Optimal solution found
@@ -386,7 +386,7 @@ River.mon6          .             1.0000        +INF             .
                              0  UNBOUNDED
 
 
-EXECUTION TIME       =        0.054 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+EXECUTION TIME       =        0.076 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
 
 
 USER: Course License                                 G260818+0003Ac-GEN
@@ -396,5 +396,5 @@ USER: Course License                                 G260818+0003Ac-GEN
 
 **** FILE SUMMARY
 
-Input      /Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/more_complicated_reservoir_operation.gms
-Output     /Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/more_complicated_reservoir_operation.lst
+Input      /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/more_complicated_reservoir_operation.gms
+Output     /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/HW4/more_complicated_reservoir_operation.lst
