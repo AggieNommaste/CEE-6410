@@ -1,0 +1,35 @@
+
+--- Job MIP-SpecialEventPlanning.gms Start 10/09/26 21:02:00 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
+--- Applying:
+    /Library/Frameworks/GAMS.framework/Versions/54/Resources/gmsprmun.txt
+--- GAMS Parameters defined
+    Input "/Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Integer Programing/MIP-SpecialEventPlanning.gms"
+    PageSize 0
+    ScrDir "/Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Integer Programing/225a/"
+    SysDir /Library/Frameworks/GAMS.framework/Versions/54/Resources/
+    LogOption 3
+    AppendLog 1
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: Course License                                 G260818+0003Ac-GEN
+          Utah State University                                     DCE5615
+          225a/gamslice.dat
+          1d9a2824-f32d-4897
+          node:25800005 mem:8 cores:8 ipport:56627 v:2                     
+          Course license for use within the course and related course work
+          The time-limited license stops working on : Jun 14, 2027
+System information: 8 physical cores and 8 Gb physical memory detected
+GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
+--- Starting compilation
+--- MIP-SpecialEventPlanning.gms(106) 3 Mb 2 Errors
+*** Error  56 in /Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Integer Programing/MIP-SpecialEventPlanning.gms
+    Endogenous operands for * not allowed in linear models
+*** Error 256 in /Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Integer Programing/MIP-SpecialEventPlanning.gms
+    Error(s) in analyzing solve statement.
+*** The following MIP errors were detected in model Event:
+     56 equation Seat_Attendees_cons.. VAR operands for *
+--- MIP-SpecialEventPlanning.gms(115) 3 Mb 2 Errors
+*** Status: Compilation error(s)
+--- Job MIP-SpecialEventPlanning.gms Stop 10/09/26 21:02:00 elapsed 0:00:00.008
