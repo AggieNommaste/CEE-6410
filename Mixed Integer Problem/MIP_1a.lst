@@ -1,0 +1,361 @@
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/14/26 21:35:50 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      Irrigation Mixed Integer Problem
+      CEE 6410/5410
+      Ammon Wallace
+      October 14, 2026
+       
+      This problem is taken from chapter 7 in Bishop, A Bruce; Hughes, Trevor; and McKee, Mac, "Water Resources Systems Analysis - Course Notes"
+      (1999). All ECSTATIC Materials. Paper 76.
+      https://digitalcommons.usu.edu/ecstatic_all/76Learning objectives.
+       
+      A farmer plans to develop water for irrigation. He is considering two possible sources of
+      water: a gravity diversion from a possible reservoir with two alternative capacities and/or a
+      pump from a lower river diversion (refer to Figure 7.3). Between the reservoir and pump
+      site the river base flow increases by 2 acft/day due to groundwater drainage into the river.
+      Ignore losses from the reservoir. The river flow into the reservoir and the farmer's demand
+      during each of two six-month seasons of the year are given in Table 7.5. Revenue is esti-
+      mated at $300 per year per acre irrigated.
+       
+      Season, t       River Inflow,       Qt (acft) Irrigation Demand (acft/acre)
+          1               600                             1.0
+          2               200                             3.0
+       
+      Assume that there are only two possible sizes of reservoir: a high dam that has capacity of
+      700 acft or a low dam with capacity of 300 acft. The capital costs are $10,000/year and
+      $6,000/year for the high and low dams, respectively (no operating cost). The pump capac-
+      ity is fixed at 2.2 acft/day with a capital cost (if it is built) of $8,000/year and operating cost
+      of $20/acft.
+       
+       
+      Ammon Wallace
+      ammon.wallace@usu.edu
+  33   
+  34  Sets
+  35  loc The location of water /Res, River, Farm, Pump/
+  36  source Different sources to choose from /High_dam, Low_dam, Pump/
+  37  t The irrigation season /1, 2/;
+  38   
+  39  Parameters
+  40  river_gain The river base flow increase due to groundwater  (acft per day) /2/
+  41  unit_rev The revenue per acre irrigated in dollars /300/
+  42  river_inflow(t) The river inflow for each season (acft) /1 600, 2 200/
+  43  irr_demand(t) The irrigation demand (acft per acre) for each season /1 1.0, 2 3.0/
+  44  Capacity(source) The capacity of each source (acft) and (acft per day) for pump /High_dam 700, Low_dam 300, Pump 2.2/
+  45  Cost(source) The cost of each dam in dollars per year /High_dam 10000, Low_dam 6000, Pump 8000/
+  46  Operating_cost_pump The operating cost of the pump in dollars per acft /20/
+  47  days_in_season the number of days in a 6 month season /180/
+  48  res_storage_init The initial res storage (ac-ft) /0/;
+  49   
+  50  Variables
+  51  I(source) binary decision variable for each source
+  52  TPROFIT total profit gained
+  53  X(loc, t) How much water to send to each location for each season (ac-ft)
+  54  A Number of Acres to plant;
+  55   
+  56  Binary Variables
+  57  I(source);
+  58   
+  59  Positive Variables
+  60  X(loc,t)
+  61  S(t)
+  62  Q_rel(t)
+  63  A;
+  64   
+  65  Equations
+  66  Objective The objective function
+  67  Mass_balance_res(t) The mass balance constraint at the reservoir
+  68  Mass_balance_pump(t) The mass balance constraint at the pump
+  69  Dam_capacity(t) The dam capacity constraint
+  70  Pump_capacity(t) The pump capacity constraint
+  71  Mutually_exclusive The constraint that only 1 dam will be decided
+  72  Irrigation_demand(t) The irrigation demand from number of acres planted;
+  73   
+  74  Objective.. A*unit_rev - sum(source, I(source)*Cost(source)) - sum(t, X('Pump',t)*Operating_cost_pump) =E= TPROFIT;
+  75  Mutually_exclusive.. I('High_dam')+I('Low_dam') =L= 1;
+  76  Dam_capacity(t).. X('Res',t) =L= Capacity('High_dam')*I('High_dam') + Capacity('Low_dam')*I('low_dam');
+  77  Mass_balance_res(t).. X('Res',t) =E= (res_storage_init$(ord(t) eq 1)) + (X('Res',t-1)$(ord(t) gt 1)) + river_inflow(t) - X('River', t) - X('Farm', t);
+  78  Pump_capacity(t).. X('Pump',t) =L= days_in_season*capacity('Pump')*I('Pump');
+  79  Mass_balance_pump(t).. X('Pump',t) =L= X('River',t) + river_gain*days_in_season;
+  80  Irrigation_demand(t).. X('Farm',t) + X('Pump',t) =E= A * irr_demand(t);
+  81   
+  82  Model Seasons /All/;
+  83   
+  84  Solve Seasons using MIP maximizing TPROFIT;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/14/26 21:35:50 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Seasons Using MIP From line 84
+
+
+---- Objective  =E=  The objective function
+
+Objective..  - 8000*I(Pump) - 10000*I(High_dam) - 6000*I(Low_dam) - TPROFIT - 20*X(Pump,1) - 20*X(Pump,2) + 300*A =E= 0 ; (LHS = 0)
+     
+
+---- Mass_balance_res  =E=  The mass balance constraint at the reservoir
+
+Mass_balance_res(1)..  X(Res,1) + X(River,1) + X(Farm,1) =E= 600 ; (LHS = 0, INFES = 600 ****)
+     
+Mass_balance_res(2)..  - X(Res,1) + X(Res,2) + X(River,2) + X(Farm,2) =E= 200 ; (LHS = 0, INFES = 200 ****)
+     
+
+---- Mass_balance_pump  =L=  The mass balance constraint at the pump
+
+Mass_balance_pump(1)..  - X(River,1) + X(Pump,1) =L= 360 ; (LHS = 0)
+     
+Mass_balance_pump(2)..  - X(River,2) + X(Pump,2) =L= 360 ; (LHS = 0)
+     
+
+---- Dam_capacity  =L=  The dam capacity constraint
+
+Dam_capacity(1)..  - 700*I(High_dam) - 300*I(Low_dam) + X(Res,1) =L= 0 ; (LHS = 0)
+     
+Dam_capacity(2)..  - 700*I(High_dam) - 300*I(Low_dam) + X(Res,2) =L= 0 ; (LHS = 0)
+     
+
+---- Pump_capacity  =L=  The pump capacity constraint
+
+Pump_capacity(1)..  - 396*I(Pump) + X(Pump,1) =L= 0 ; (LHS = 0)
+     
+Pump_capacity(2)..  - 396*I(Pump) + X(Pump,2) =L= 0 ; (LHS = 0)
+     
+
+---- Mutually_exclusive  =L=  The constraint that only 1 dam will be decided
+
+Mutually_exclusive..  I(High_dam) + I(Low_dam) =L= 1 ; (LHS = 0)
+     
+
+---- Irrigation_demand  =E=  The irrigation demand from number of acres planted
+
+Irrigation_demand(1)..  X(Farm,1) + X(Pump,1) - A =E= 0 ; (LHS = 0)
+     
+Irrigation_demand(2)..  X(Farm,2) + X(Pump,2) - 3*A =E= 0 ; (LHS = 0)
+     
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/14/26 21:35:50 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Seasons Using MIP From line 84
+
+
+---- I  binary decision variable for each source
+
+I(Pump)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -8000       Objective
+     -396       Pump_capacity(1)
+     -396       Pump_capacity(2)
+
+I(High_dam)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+   -10000       Objective
+     -700       Dam_capacity(1)
+     -700       Dam_capacity(2)
+        1       Mutually_exclusive
+
+I(Low_dam)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -6000       Objective
+     -300       Dam_capacity(1)
+     -300       Dam_capacity(2)
+        1       Mutually_exclusive
+
+
+---- TPROFIT  total profit gained
+
+TPROFIT
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       Objective
+
+
+---- X  How much water to send to each location for each season (ac-ft)
+
+X(Res,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Mass_balance_res(1)
+       -1       Mass_balance_res(2)
+        1       Dam_capacity(1)
+
+X(Res,2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Mass_balance_res(2)
+        1       Dam_capacity(2)
+
+X(River,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Mass_balance_res(1)
+       -1       Mass_balance_pump(1)
+
+REMAINING 5 ENTRIES SKIPPED
+
+---- A  Number of Acres to plant
+
+A
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      300       Objective
+       -1       Irrigation_demand(1)
+       -3       Irrigation_demand(2)
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/14/26 21:35:50 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Seasons Using MIP From line 84
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 6.000E+02] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.000E+04]
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/14/26 21:35:50 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Seasons Using MIP From line 84
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS           12
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           13
+NON ZERO ELEMENTS            36     DISCRETE VARIABLES          3
+
+
+GENERATION TIME      =        0.007 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           DAX-DAC arm 64bit/macOS - 10/14/26 21:35:50 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Seasons Using MIP From line 84
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Seasons             OBJECTIVE  TPROFIT
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  84
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE            81600.0000
+
+ RESOURCE USAGE, LIMIT          0.015 10000000000.000
+ ITERATION COUNT, LIMIT         7    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.02sec (det. 0.13 ticks)
+
+
+Proven optimal solution
+MIP Solution:        81600.000000    (7 iterations, 0 nodes)
+
+Best possible:       81600.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER
+
+---- EQU Objective           .              .              .          
+
+  Objective  The objective function
+
+---- EQU Mass_balance_res  The mass balance constraint at the reservoir
+
+         LOWER          LEVEL          UPPER
+
+1       600.0000       600.0000       600.0000      
+2       200.0000       200.0000       200.0000      
+
+---- EQU Mass_balance_pump  The mass balance constraint at the pump
+
+         LOWER          LEVEL          UPPER
+
+1        -INF          360.0000       360.0000      
+2        -INF          360.0000       360.0000      
+
+---- EQU Dam_capacity  The dam capacity constraint
+
+         LOWER          LEVEL          UPPER
+
+1        -INF         -120.0000          .          
+2        -INF         -700.0000          .          
+
+---- EQU Pump_capacity  The pump capacity constraint
+
+         LOWER          LEVEL          UPPER
+
+1        -INF          -36.0000          .          
+2        -INF          -36.0000          .          
+
+                           LOWER          LEVEL          UPPER
+
+---- EQU Mutually_~        -INF            1.0000         1.0000      
+
+  Mutually_exclusive  The constraint that only 1 dam will be decided
+
+---- EQU Irrigation_demand  The irrigation demand from number of acres planted
+
+         LOWER          LEVEL          UPPER
+
+1          .              .              .          
+2          .              .              .          
+
+---- VAR I  binary decision variable for each source
+
+                LOWER          LEVEL          UPPER
+
+Pump              .             1.0000         1.0000      
+High_dam          .             1.0000         1.0000      
+Low_dam           .              .             1.0000      
+
+                           LOWER          LEVEL          UPPER
+
+---- VAR TPROFIT           -INF        81600.0000        +INF         
+
+  TPROFIT  total profit gained
+
+---- VAR X  How much water to send to each location for each season (ac-ft)
+
+               LOWER          LEVEL          UPPER
+
+Res  .1          .           580.0000        +INF         
+Res  .2          .              .            +INF         
+River.1          .              .            +INF         
+River.2          .              .            +INF         
+Farm .1          .            20.0000        +INF         
+Farm .2          .           780.0000        +INF         
+Pump .1          .           360.0000        +INF         
+Pump .2          .           360.0000        +INF         
+
+                           LOWER          LEVEL          UPPER
+
+---- VAR A                   .           380.0000        +INF         
+
+  A  Number of Acres to plant
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.066 SECONDS      4 MB  54.4.0 9a60ae27 DAX-DAC
+
+
+USER: Course License                                 G260818+0003Ac-GEN
+      Utah State University                                     DCE5615
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Mixed Integer Problem/MIP_1a.gms
+Output     /Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Mixed Integer Problem/MIP_1a.lst
