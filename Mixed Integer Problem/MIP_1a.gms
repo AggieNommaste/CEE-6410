@@ -38,13 +38,13 @@ t The irrigation season /1, 2/;
 
 Parameters
 river_gain The river base flow increase due to groundwater  (acft per day) /2/
-unit_rev The revenue per acre irrigated in dollars /300/
+unit_rev The revenue per acre irrigated in dollars /300/    
 river_inflow(t) The river inflow for each season (acft) /1 600, 2 200/
 irr_demand(t) The irrigation demand (acft per acre) for each season /1 1.0, 2 3.0/
 Capacity(source) The capacity of each source (acft) and (acft per day) for pump /High_dam 700, Low_dam 300, Pump 2.2/
 Cost(source) The cost of each dam in dollars per year /High_dam 10000, Low_dam 6000, Pump 8000/
 Operating_cost_pump The operating cost of the pump in dollars per acft /20/
-days_in_season the number of days in a 6 month season /180/
+days_in_season the number of days in a 6 month season /182.5/
 res_storage_init The initial res storage (ac-ft) /0/;
 
 Variables
@@ -59,22 +59,23 @@ I(source);
 Positive Variables
 X(loc,t)
 S(t)
-Q_rel(t)
 A;
-
+    
 Equations
 Objective The objective function
 Mass_balance_res(t) The mass balance constraint at the reservoir
 Mass_balance_pump(t) The mass balance constraint at the pump
 Dam_capacity(t) The dam capacity constraint
 Pump_capacity(t) The pump capacity constraint
-Mutually_exclusive The constraint that only 1 dam will be decided
+Mutually_exclusive_dams The constraint that only 1 dam will be decided
 Irrigation_demand(t) The irrigation demand from number of acres planted;
 
+
 Objective.. A*unit_rev - sum(source, I(source)*Cost(source)) - sum(t, X('Pump',t)*Operating_cost_pump) =E= TPROFIT;
-Mutually_exclusive.. I('High_dam')+I('Low_dam') =L= 1;
+Mutually_exclusive_dams.. I('High_dam')+I('Low_dam') =L= 1;
 Dam_capacity(t).. X('Res',t) =L= Capacity('High_dam')*I('High_dam') + Capacity('Low_dam')*I('low_dam');
-Mass_balance_res(t).. X('Res',t) =E= (res_storage_init$(ord(t) eq 1)) + (X('Res',t-1)$(ord(t) gt 1)) + river_inflow(t) - X('River', t) - X('Farm', t);
+Mass_balance_res(t).. X('Res',t) =E= (res_storage_init$(ord(t) eq 1)) +
+                      (X('Res',t-1)$(ord(t) gt 1)) + river_inflow(t) - X('River', t) - X('Farm', t);
 Pump_capacity(t).. X('Pump',t) =L= days_in_season*capacity('Pump')*I('Pump');
 Mass_balance_pump(t).. X('Pump',t) =L= X('River',t) + river_gain*days_in_season;
 Irrigation_demand(t).. X('Farm',t) + X('Pump',t) =E= A * irr_demand(t);
@@ -82,3 +83,5 @@ Irrigation_demand(t).. X('Farm',t) + X('Pump',t) =E= A * irr_demand(t);
 Model Seasons /All/;
 
 Solve Seasons using MIP maximizing TPROFIT;
+
+Display X.L, TPROFIT.L, A.L, I.L;

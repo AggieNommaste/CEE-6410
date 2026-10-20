@@ -1,11 +1,11 @@
 
---- Job MIP_1a.gms Start 10/14/26 21:35:50 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
+--- Job MIP_1a.gms Start 10/19/26 20:57:41 54.4.0 9a60ae27 DAX-DAC arm 64bit/macOS
 --- Applying:
     /Library/Frameworks/GAMS.framework/Versions/54/Resources/gmsprmun.txt
 --- GAMS Parameters defined
-    Input "/Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Mixed Integer Problem/MIP_1a.gms"
+    Input "/Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Mixed Integer Problem/MIP_1a.gms"
     PageSize 0
-    ScrDir "/Users/ammonwallace/OneDrive - USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Mixed Integer Problem/225a/"
+    ScrDir "/Users/ammonwallace/Library/CloudStorage/OneDrive-USU/2026-2027/Fall 2026/Engineering Systems Analysis/Code/Mixed Integer Problem/225a/"
     SysDir /Library/Frameworks/GAMS.framework/Versions/54/Resources/
     LogOption 3
     AppendLog 1
@@ -17,16 +17,16 @@ Licensee: Course License                                 G260818+0003Ac-GEN
           Utah State University                                     DCE5615
           225a/gamslice.dat
           1d9a2824-f32d-4897
-          node:25800005 mem:8 cores:8 ipport:54290 v:2                     
+          node:25800005 mem:8 cores:8 ipport:60355 v:2                     
           Course license for use within the course and related course work
           The time-limited license stops working on : Jun 14, 2027
 System information: 8 physical cores and 8 Gb physical memory detected
 GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
 --- Starting compilation
---- MIP_1a.gms(84) 3 Mb
+--- MIP_1a.gms(87) 3 Mb
 --- Starting execution: elapsed 0:00:00.005
 --- Generating MIP model Seasons
---- MIP_1a.gms(84) 4 Mb
+--- MIP_1a.gms(85) 4 Mb
 ---   12 rows  13 columns  36 non-zeroes
 ---   3 discrete-columns
 --- Range statistics (absolute non-zero finite values)
@@ -56,7 +56,7 @@ Generic callback                                 0x50
 Found incumbent of value 0.000000 after 0.00 sec. (0.00 ticks)
 Tried aggregator 2 times.
 MIP Presolve eliminated 0 rows and 1 columns.
-MIP Presolve modified 1 coefficients.
+MIP Presolve modified 2 coefficients.
 Aggregator did 1 substitutions.
 Reduced MIP has 10 rows, 11 columns, and 27 nonzeros.
 Reduced MIP has 3 binaries, 0 generals, 0 SOSs, and 0 indicators.
@@ -79,48 +79,51 @@ Presolve time = 0.00 sec. (0.00 ticks)
 Initializing dual steep norms . . .
 
 Iteration      Dual Objective            In Variable           Out Variable
-     1          103560.000000              X(Farm,2)             X(River,2)
-     2          101580.000000              X(Pump,1)Mass_balance_pump slack
-     3           99600.000000              X(Pump,2)Mass_balance_pump slack
-     4           89933.333333            I(High_dam)  Dam_capacity(1) slack
-     5           82660.606061                I(Pump) Pump_capacity(1) slack
-Root relaxation solution time = 0.00 sec. (0.01 ticks)
+     1          104110.000000              X(Pump,1)             X(River,2)
+     2          103380.000000             X(River,2)Mass_balance_pump slack
+     3          100500.000000              X(Pump,2)Mass_balance_pump slack
+     4          100150.000000              X(Farm,2)             X(River,2)
+     5           90441.666667            I(High_dam)  Dam_capacity(1) slack
+     6           83150.780275                I(Pump) Pump_capacity(1) slack
+Root relaxation solution time = 0.00 sec. (0.02 ticks)
 
         Nodes                                         Cuts/
    Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
 
-*     0+    0                            0.0000   111680.0000              --- 
+*     0+    0                            0.0000   112120.0000              --- 
 Found incumbent of value 0.000000 after 0.01 sec. (0.08 ticks)
-*     0+    0                        44000.0000   111680.0000           153.82%
+*     0+    0                        44000.0000   112120.0000           154.82%
 Found incumbent of value 44000.000000 after 0.01 sec. (0.08 ticks)
-      0     0    82660.6061     2    44000.0000    82660.6061        5   87.87%
-*     0+    0                        81600.0000    82660.6061             1.30%
-Found incumbent of value 81600.000000 after 0.01 sec. (0.09 ticks)
-      0     0        cutoff          81600.0000                      7     --- 
-Elapsed time = 0.01 sec. (0.13 ticks, tree = 0.01 MB)
+      0     0    83150.7803     2    44000.0000    83150.7803        6   88.98%
+*     0+    0                        82150.0000    83150.7803             1.22%
+Found incumbent of value 82150.000000 after 0.01 sec. (0.09 ticks)
+      0     0        cutoff          82150.0000                      8     --- 
+Elapsed time = 0.03 sec. (0.13 ticks, tree = 0.01 MB)
 
 Root node processing (before b&c):
-  Real time             =    0.01 sec. (0.13 ticks)
+  Real time             =    0.03 sec. (0.13 ticks)
 Parallel b&c, 8 threads:
   Real time             =    0.00 sec. (0.00 ticks)
   Sync time (average)   =    0.00 sec.
   Wait time (average)   =    0.00 sec.
                           ------------
-Total (root+branch&cut) =    0.01 sec. (0.13 ticks)
+Total (root+branch&cut) =    0.03 sec. (0.13 ticks)
 
 --- MIP status (101): integer optimal solution.
---- Cplex Time: 0.02sec (det. 0.13 ticks)
+--- Cplex Time: 0.03sec (det. 0.13 ticks)
 
 
 Proven optimal solution
-MIP Solution:        81600.000000    (7 iterations, 0 nodes)
+MIP Solution:        82150.000000    (8 iterations, 0 nodes)
 
-Best possible:       81600.000000
+Best possible:       82150.000000
 Absolute gap:            0.000000
 Relative gap:            0.000000
 
 --- Reading solution for model Seasons
 --- Solver did not provide marginals for model Seasons
 --- To request marginals from the solver set option requestMarginals >= 1
+--- Executing after solve: elapsed 0:00:00.086
+--- MIP_1a.gms(87) 4 Mb
 *** Status: Normal completion
---- Job MIP_1a.gms Stop 10/14/26 21:35:50 elapsed 0:00:00.071
+--- Job MIP_1a.gms Stop 10/19/26 20:57:41 elapsed 0:00:00.086
