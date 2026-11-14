@@ -1,0 +1,131 @@
+---
+title: "Multi-Objective Visualization for Lake Maggorie Reservoir Operations Problem"
+author: "David E. Rosenberg"
+date: "November 17, 2025"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Description
+
+This is an R Markdown file. Build:
+
+1. Interactive Parallel Coordinate Plot for Lake Maggorrie Management Objectives and Decision Variables (HW 8)
+2. Scatter Matrix Correlation Plot of All 2x2 Combinations of Objectives and Decision Variables
+
+David Rosenberg
+Utah State University
+david.rosenberg@usu.edu
+
+```{r PCPforMaggorie, echo=FALSE, warning=FALSE, message=FALSE}
+
+#Clear the workspace
+rm(list = ls())
+
+#Load needed packages
+load.lib <- c("plotly", "readxl", "RColorBrewer", "dplyr", "ggplot2")
+# Then we select only the packages that aren't currently installed.
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+# And finally we install the missing packages, including their dependency.
+for(lib in install.lib) install.packages(lib,dependencies=TRUE)
+# After the installation process completes, we load all packages.
+sapply(load.lib,require,character=TRUE)
+
+
+# Read CSV into R dataframe
+dfMaggorieAlts <- read.csv(file="HW8_altsNew.csv", 
+                               header=TRUE, 
+                                
+                               stringsAsFactors=FALSE,
+                               sep=",")
+
+# Reader the header names from the dataframe
+MaggorieVars <- names(dfMaggorieAlts)
+
+# Define column headers to include on the plot
+MaggorieVarsAbrev <- c('Flood Intensity (m)','Unmet Irrigation Demand (m3/d)','Unmet Hydropower Demand (m3/d)', 'Recreation Storage Deficit (m3)',
+                       'Shortage Slope (x1; radians)', ' Spill Trigger (x2; m3)', 'Spill Slope (x3; radians)')
+
+
+
+#Calculate mins and maxes
+mins <- floor(apply(dfMaggorieAlts,2,min))
+maxes <- ceiling(apply(dfMaggorieAlts,2,max))
+
+```
+
+# Figure 1. Parallel Coordinate Plot
+
+Click on any axis title to drag right or left to be next to another axis.
+Select any range on one axis to filter alternatives within that range.
+
+```{r PCPforMaggorie2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12}
+
+
+p <- plot_ly(data = dfMaggorieAlts, type = 'parcoords',
+          line = list(color='blue'),
+          dimensions = list(
+            list(range = c(mins[1],maxes[1]),
+                 label = MaggorieVarsAbrev[1], values =  ~FloodIntensity,
+                 tickvals= c(mins[1],maxes[1])),
+            list(range = c(mins[2],maxes[2]),
+                 label = MaggorieVarsAbrev[2], values = ~UnmetIrrDemand,
+                 tickvals= c(mins[2],maxes[2])),
+            list(range = c(mins[3],maxes[3]),
+                 label = MaggorieVarsAbrev[3], values =  ~UnmetHydroDemand,
+                 tickvals= c(mins[3],maxes[3])),
+            list(range = c(mins[4],maxes[4]),
+                 label = MaggorieVarsAbrev[4], values = ~UnmetRecreationDemand,
+                 tickvals= c(mins[4],maxes[4])),
+            list(range = c(mins[5],maxes[5]),
+                 tickvals = c(mins[5],maxes[5]),
+                 label = MaggorieVarsAbrev[5], values = ~x1),
+            list(range = c(mins[6],maxes[6]),
+                 tickvals = c(mins[6],maxes[6]),
+                 label = MaggorieVarsAbrev[6], values = ~x2),
+            list(range = c(mins[7],maxes[7]),
+                 tickvals = c(mins[7],maxes[7]),
+                 label = MaggorieVarsAbrev[7], values = ~x3)
+
+            )
+         )
+
+
+p
+
+
+```
+
+# Figure 2. Scatter matrix plot
+
+```{r PCPforMaggorie3, echo=FALSE, warning=FALSE, message=FALSE}
+
+##### Scatter Matrix Correlation Plot in Base R (7 x 7)
+# Calculate correlation matrix for variables
+# Approach #1 from https://www.r-bloggers.com/scatter-plot-matrices-in-r/
+corMatrix <- cor(dfMaggorieAlts[,1:7])
+
+# Approach #2 from https://www.r-bloggers.com/scatter-plot-matrices-in-r/
+# Print to Plot window in R Studio
+pairs(dfMaggorieAlts[,1:7])
+
+# # Also Print to PDF
+# #https://bookdown.org/ndphillips/YaRrr/saving-plots-to-a-file-with-pdf-jpeg-and-png.html
+# # Step 1: Call the pdf command to start the plot
+# pdf(file = "ScatterMatrix.pdf",   # The directory you want to save the file in
+#     width = 6, # The width of the plot in inches
+#     height = 6) # The height of the plot in inches
+
+# Step 2: Create the plot with R code
+#pairs(dfMaggorieAlts[,1:7])
+
+# # Step 3: Run dev.off() to create the file!
+# dev.off()
+
+
+
+
+
