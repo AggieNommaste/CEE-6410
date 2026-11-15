@@ -12,7 +12,8 @@ fig = px.parallel_coordinates(
     df,
     color='Dominance',  # Must be a numeric column for continuous color scales
     dimensions=[
-        'Dominance',
+       # Uncomment for Dominance as a filter
+       #'Dominance',
         'FloodIntensity',
         'UnmetIrrDemand',
         'UnmetHydroDemand',
